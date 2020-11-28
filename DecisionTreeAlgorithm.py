@@ -22,7 +22,7 @@ def class_counts(rows):
     return counts
 
 def is_numeric(value):
-        print('getting to is numeric check')
+        #print('getting to is numeric check')
         try:
             float(value)
             return True
@@ -36,32 +36,30 @@ class Question:
     
     #init to create a question based on a column attribute value and the corresponding classification
     def __init__(self,column,value):
-        print('new question created')
         self.column = column
         if is_numeric(value):
             self.value = float(value)
         else:
             self.value = value 
         testing = isinstance(self.value,str)
-        print(testing)
     
     #get correct attribute of input based on question and compare to the question we made above
     def compare_question_to_input(self, input):
-        print('got into asking question')
+        #print('got into asking question')
         test_val = input[self.column]
        
 
         #if it is numerical, it returns true if it is greater than the question attribute
         if is_numeric(test_val):
-            print('THE ATTRIBUTE IS NUMERIC')
+            #print('THE ATTRIBUTE IS NUMERIC')
             if float(test_val) >= self.value:
-                print('IT IS GREATER THAN')
+                #print('IT IS GREATER THAN')
                 return True
             else:
                 return False
         #if it is categorical, it returns true if the question and input attribute are equal
         else:
-            print('the attribute is categorical')
+            #print('the attribute is categorical')
             return test_val == self.value
 #nicer print out statement
     def __repr__(self):
@@ -91,8 +89,8 @@ def calculate_gini(rows):
 
 #calculate the information gain by getting the gini of left and right and taking that away from gini of system at that node
 def calculate_info_gain(left_side,right_side, current_gini):
-    print(len(left_side))
-    print(len(right_side))
+    # print(len(left_side))
+    # print(len(right_side))
 
     Pi = float(len(left_side)/ (len(left_side) + len(right_side)))
     info_gain = current_gini - Pi * calculate_gini(left_side) - (1 - Pi) * calculate_gini(right_side)
@@ -102,9 +100,15 @@ def find_best_split(rows):
     best_gain = 0
     best_question = None
     current_gini = calculate_gini(rows)
-    no_features = len(rows[0]) -1
+    no_features = len(rows[0]) 
+    #print(no_features)
 
     for feature in range(no_features):
+        #print(feature)
+        if feature == class_column:
+            #print('in continue')
+            continue
+        #print("out of continue")
         values = find_unique_vals_in_col(rows,feature)
 
         for val in values:
