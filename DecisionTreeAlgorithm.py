@@ -96,31 +96,63 @@ def calculate_info_gain(left_side,right_side, current_gini):
     info_gain = current_gini - Pi * calculate_gini(left_side) - (1 - Pi) * calculate_gini(right_side)
     return info_gain
 
+
 def find_best_split(rows):
     best_gain = 0
     best_question = None
+
+    #calculates gini for the rows provided
     current_gini = calculate_gini(rows)
     no_features = len(rows[0]) 
     #print(no_features)
 
+    #iterates through the features in the dataset (i.e columns)
     for feature in range(no_features):
         #print(feature)
+
+        #skip if the feature is the one we want to classify as - set at start
         if feature == class_column:
             #print('in continue')
             continue
         #print("out of continue")
+
+        #get all the values in the current feature column
         values = find_unique_vals_in_col(rows,feature)
 
+        #iterate through the column down
         for val in values:
+            #set the new question as the current attribute and its value
             question = Question(feature,val)
+            #go through all the rows for that attribute and check them against our question 
             true_rows, false_rows = split_data(rows, question)
 
+            #calcualte the gain of the split 
             gain = calculate_info_gain(true_rows,false_rows,current_gini)
             if gain > best_gain:
                 best_gain = gain
                 best_question = question
+    print(best_gain)
+    print(best_question)
     return best_gain,best_question
 
+def iterate_through_tree(rows):
+    info_gain, question = find_best_split(rows)
+
+    if info_gain == 0:
+        return
+    
+    true_rows, false_rows = split_data(rows, question)
+
+    print('true branch first')
+    true_branch = iterate_through_tree(true_rows)
+
+    print('false branch now')
+    false_branch = iterate_through_tree(false_rows)
+
+    return question,info_gain
+
+#need to assign leafs/nodes 
+#need to call find best split recusively
 if __name__ == "__main__":
     with open(training_data_name, 'r') as f:
         reader = csv.reader(f)
@@ -158,6 +190,11 @@ if __name__ == "__main__":
     # infog = calculate_info_gain(t,f,gini)
     # print(infog)
 
-    b_gain,b_question = find_best_split(training_data)
-    print(b_gain)
-    print(b_question)
+    # b_gain,b_question = find_best_split(training_data)
+    # print(b_gain)
+    # print(b_question)
+
+    q3, info3 = iterate_through_tree(training_data)
+    print('main loop ones')
+    print(q3)
+    print(info3)
