@@ -131,9 +131,10 @@ def find_best_split(rows):
             if gain > best_gain:
                 best_gain = gain
                 best_question = question
-    print(best_gain)
-    print(best_question)
+    # print(best_gain)
+    # print(best_question)
     return best_gain,best_question
+
 
 def iterate_through_tree(rows):
     info_gain, question = find_best_split(rows)
@@ -143,10 +144,10 @@ def iterate_through_tree(rows):
     
     true_rows, false_rows = split_data(rows, question)
 
-    print('true branch first')
+    #print('true branch first')
     true_branch = iterate_through_tree(true_rows)
 
-    print('false branch now')
+    #print('false branch now')
     false_branch = iterate_through_tree(false_rows)
 
     return Decision_Node(question, true_branch, false_branch)
@@ -242,5 +243,5 @@ if __name__ == "__main__":
 
     tree = iterate_through_tree(training_data)
     print_tree(tree)
-    for row in training_data:
-        classify(row, tree)
+    # for row in training_data:
+    #     classify(row, tree)
