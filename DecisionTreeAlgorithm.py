@@ -139,7 +139,7 @@ def iterate_through_tree(rows):
     info_gain, question = find_best_split(rows)
 
     if info_gain == 0:
-        return
+        return Leaf(rows)
     
     true_rows, false_rows = split_data(rows, question)
 
@@ -149,7 +149,48 @@ def iterate_through_tree(rows):
     print('false branch now')
     false_branch = iterate_through_tree(false_rows)
 
-    return question,info_gain
+    return Decision_Node(question, true_branch, false_branch)
+
+
+class Leaf:
+    def __init__(self,rows):
+        self.predictions = class_counts(rows)
+
+class Decision_Node:
+    def __init__(self, question, true_branch, false_branch):
+        self.question = question
+        self.true_branch = true_branch
+        self.false_branch = false_branch
+
+
+def classify(row, node):
+    if isinstance(node,Leaf):
+        return node.predictions
+    
+    if node.question.compare_question_to_input(row):
+        return classify(row, node.true_branch)
+    else:
+        return classify(row, node.false_branch)
+
+def print_tree(node, spacing=""):
+    """World's most elegant tree printing function."""
+
+    # Base case: we've reached a leaf
+    if isinstance(node, Leaf):
+        print (spacing + "Predict", node.predictions)
+        return
+
+    # Print the question at this node
+    print (spacing + str(node.question))
+
+    # Call this function recursively on the true branch
+    print (spacing + '--> True:')
+    print_tree(node.true_branch, spacing + "  ")
+
+    # Call this function recursively on the false branch
+    print (spacing + '--> False:')
+    print_tree(node.false_branch, spacing + "  ")
+
 
 #need to assign leafs/nodes 
 #need to call find best split recusively
@@ -194,7 +235,12 @@ if __name__ == "__main__":
     # print(b_gain)
     # print(b_question)
 
-    q3, info3 = iterate_through_tree(training_data)
-    print('main loop ones')
-    print(q3)
-    print(info3)
+    # q3, info3 = iterate_through_tree(training_data)
+    # print('main loop ones')
+    # print(q3)
+    # print(info3)
+
+    tree = iterate_through_tree(training_data)
+    print_tree(tree)
+    for row in training_data:
+        classify(row, tree)
