@@ -1,8 +1,9 @@
 import csv
 import math 
 import string
+import random
 
-training_data_name = 'beer_training.csv'
+training_data_name = 'beer.txt'
 training_data = []
 classifications = []
 class_column = 3
@@ -21,6 +22,7 @@ def class_counts(rows):
         counts[label] += 1
     return counts
 
+#checks if input is numeric
 def is_numeric(value):
         #print('getting to is numeric check')
         try:
@@ -61,6 +63,7 @@ class Question:
         else:
             #print('the attribute is categorical')
             return test_val == self.value
+
 #nicer print out statement
     def __repr__(self):
         condition = "=="
@@ -195,17 +198,49 @@ def print_tree(node, spacing=""):
 
 #need to assign leafs/nodes 
 #need to call find best split recusively
+testing_data, training_dat = [],[]
+
 if __name__ == "__main__":
     with open(training_data_name, 'r') as f:
-        reader = csv.reader(f)
+        reader = csv.reader(f,delimiter='\t')
         linecount = 0
         for row in reader:
             if linecount == 0:
                 linecount += 1
                 attributes = row
+                #print('Attributes\n')
+                #print(attributes)
             else:
                 training_data.append(row)
                 linecount += 1
+                #every third dataset is added to testing data
+                if linecount % 3 == 0:
+                    testing_data.append(row)
+                else:
+                    training_dat.append(row)
+
+    random.shuffle(training_data)
+    no_samples = (linecount -1)//3
+    print(linecount)
+    print(no_samples)
+    random_third = []
+    random_third = training_data[: no_samples]
+    print(len(random_third))
+    # print(testing_data)
+    # print('\n')
+    # print(training_dat)
+    # with open ('beer.txt', 'r') as q:
+        # #first_column = [row[0] for row in csv.reader(q,delimiter='\t')]
+        # for row2 in csv.reader(q,delimiter='\t'):
+            # print(row2)
+        #print (first_column)
+
+
+    # print(training_dat)
+    # print(testing_data)
+  
+    # print(len(training_dat))
+    # print(len(testing_data))  
     #print(training_data)
     values = find_unique_vals_in_col(training_data,3)
     #print(values)
