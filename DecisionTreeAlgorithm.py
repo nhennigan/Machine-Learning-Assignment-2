@@ -3,14 +3,26 @@ import math
 import string
 import random
 
-training_data_name = 'beer.txt'
+#user inputs
+training_data_name = '10sample.txt'
 training_data = []
 classifications = []
 class_column = 3
 
 #returns a set of all unique values in the column col 
 def find_unique_vals_in_col(rows,col):
+    # unique_set = []
+    # for row in rows:
+    #     if row[col] not in unique_set:
+    #             unique_set.append(row[col])
+    # return unique_set
     return set([row[col] for row in rows])
+
+def get_column(rows,col):
+    column_list = []
+    for row in rows:
+        column_list.append(row[col])
+    return column_list
 
 #determines how many of each classification is in the dataset
 def class_counts(rows):
@@ -43,7 +55,7 @@ class Question:
             self.value = float(value)
         else:
             self.value = value 
-        testing = isinstance(self.value,str)
+        #testing = isinstance(self.value,str)
     
     #get correct attribute of input based on question and compare to the question we made above
     def compare_question_to_input(self, input):
@@ -81,6 +93,25 @@ def split_data(rows, question):
             false_results.append(row)
     return true_results,false_results
 
+
+def split_data2(rows, feature_column, value_to_test_against):
+    true_results2, false_results2 = [], []
+    #u = 0
+    for row in rows:
+        #print(row)
+        #testing_feature_value = rows[feature, feature_value]
+        if is_numeric(row[feature_column]):
+            if float(row[feature_column]) >= float(value_to_test_against):
+                #print('%s IS GREATER THAN %s'%(row[feature_column],value_to_test_against))
+                true_results2.append(row)
+                #u += 1
+            else:
+                #print('%s IS LESS THAN %s'%(row[feature_column],value_to_test_against))
+                false_results2.append(row)
+                #u += 1
+    #print(u)
+    return true_results2, false_results2
+
 #calculate gini of the rows inputted 
 def calculate_gini(rows):
     labels = class_counts(rows)
@@ -102,6 +133,7 @@ def calculate_info_gain(left_side,right_side, current_gini):
 
 def find_best_split(rows):
     best_gain = 0
+    best_gain2 =0
     best_question = None
 
     #calculates gini for the rows provided
@@ -111,6 +143,7 @@ def find_best_split(rows):
 
     #iterates through the features in the dataset (i.e columns)
     for feature in range(no_features):
+        #print(feature)
         #print(feature)
 
         #skip if the feature is the one we want to classify as - set at start
@@ -123,19 +156,57 @@ def find_best_split(rows):
         values = find_unique_vals_in_col(rows,feature)
 
         #iterate through the column down
+        #i = 0
         for val in values:
+            
             #set the new question as the current attribute and its value
             question = Question(feature,val)
+            #print(question)
             #go through all the rows for that attribute and check them against our question 
             true_rows, false_rows = split_data(rows, question)
+
+            #testing_feature_value = rows[feature][i]
+            
 
             #calcualte the gain of the split 
             gain = calculate_info_gain(true_rows,false_rows,current_gini)
             if gain > best_gain:
                 best_gain = gain
                 best_question = question
+
+        
+        #print(rows[feature])
+        #print(rows[0])
+        # testing_feature_value = rows[0][1]
+        # print(testing_feature_value)
+        column_vals = get_column(rows,feature)
+        #print(column_vals[0])
+        l = 0
+        #print(rows[1][0])
+        while l < len(column_vals):
+            
+            testing_feature_value = rows[l][feature]
+            true2, false2 = split_data2(rows, feature, testing_feature_value)
+            l += 1
+            gain2 = calculate_info_gain(true2,false2,current_gini)
+            if gain2 > best_gain2:
+                best_gain2 = gain2
+                best_question2 = []
+                #best_question2.append(rows[l][feature])
+            
+            # print('L:')
+            # print(l)
+        #print(testing_feature_value)
+        # print(attributes[feature])
+        # print(len(true2))
+        # print(true2)
+        # print(len(false2))
+        # print(false2)
     # print(best_gain)
     # print(best_question)
+    print(best_gain)
+    print(best_gain2)
+    #print(best_question2)
     return best_gain,best_question
 
 
@@ -219,13 +290,17 @@ if __name__ == "__main__":
                 else:
                     training_dat.append(row)
 
-    random.shuffle(training_data)
-    no_samples = (linecount -1)//3
-    print(linecount)
-    print(no_samples)
-    random_third = []
-    random_third = training_data[: no_samples]
-    print(len(random_third))
+    # another way to get the random third
+    # random.shuffle(training_data)
+    # no_samples = (linecount -1)//3
+    # # print(linecount)
+    # # print(no_samples)
+    # random_third = []
+    # random_third = training_data[: no_samples]
+    #print(len(random_third))
+
+
+
     # print(testing_data)
     # print('\n')
     # print(training_dat)
@@ -242,10 +317,11 @@ if __name__ == "__main__":
     # print(len(training_dat))
     # print(len(testing_data))  
     #print(training_data)
+    print(len(training_data))
     values = find_unique_vals_in_col(training_data,3)
-    #print(values)
-    # numbers = class_counts(training_data)
-    # print (numbers)
+    print(values)
+    numbers = class_counts(training_data)
+    print (numbers)
     q= Question(1,0.25)
     # print(Question(1,3))
     example = training_data[0]
@@ -253,6 +329,10 @@ if __name__ == "__main__":
     # print(q1)
 
     t,f = split_data(training_data,q)
+
+    infGain, q4 = find_best_split(training_data)
+    #print(q4)
+    #print(training_data[1])
     # print('\nTHIS IS T')
     # print(t)
     # print('\nTHIS IS F')
@@ -261,8 +341,8 @@ if __name__ == "__main__":
     # print (len(t))
     # print (len(f))
     ex = [ ['43.88938053', '0.548977011', '3.186363636', 'ale', '4.289230769', '16.73', '14.974', '13.44', '63.03285714'],['38.13716814', '0.328714951', '3.753636364', 'stout', '4.138461538', '18.7', '7.799368421', '10.2', '71.17142857']]
-    # gini = calculate_gini(training_data)
-    # print(gini)
+    gini = calculate_gini(training_data)
+    print(gini)
 
     # infog = calculate_info_gain(t,f,gini)
     # print(infog)
@@ -276,7 +356,7 @@ if __name__ == "__main__":
     # print(q3)
     # print(info3)
 
-    tree = iterate_through_tree(training_data)
-    print_tree(tree)
+    # tree = iterate_through_tree(training_data)
+    # print_tree(tree)
     # for row in training_data:
     #     classify(row, tree)
