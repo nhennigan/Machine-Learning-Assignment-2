@@ -48,71 +48,30 @@ def is_numeric(value):
         #return value.isdigit()
         #return isinstance(value,int) or isinstance(value,float)
 
-class Question:
-    #this class is used to create and ask the questions to split the data
-    
-    #init to create a question based on a column attribute value and the corresponding classification
-    def __init__(self,column,value):
-        self.column = column
-        if is_numeric(value):
-            self.value = float(value)
-        else:
-            self.value = value 
-        #testing = isinstance(self.value,str)
-    
-    #get correct attribute of input based on question and compare to the question we made above
-    def compare_question_to_input(self, input):
-        #print('got into asking question')
-        test_val = input[self.column]
-       
-
-        #if it is numerical, it returns true if it is greater than the question attribute
-        if is_numeric(test_val):
+def compare(row, feature_column, feature_value):
+    if is_numeric(row[feature_column]):
             #print('THE ATTRIBUTE IS NUMERIC')
-            if float(test_val) >= self.value:
+            if float(row[feature_column]) >= float(feature_value):
                 #print('IT IS GREATER THAN')
                 return True
             else:
                 return False
         #if it is categorical, it returns true if the question and input attribute are equal
-        else:
+    else:
             #print('the attribute is categorical')
-            return test_val == self.value
-
-#nicer print out statement
-    def __repr__(self):
-        condition = "=="
-        if is_numeric(self.value):
-            condition = ">="
-        return "Is %s %s %s" % (attributes[self.column],condition,str(self.value))
-
-#split the data into two lists depending if the result to the question asked is true of false
-def split_data(rows, question):
-    true_results, false_results = [], []
-    for row in rows:
-        if question.compare_question_to_input(row):
-            true_results.append(row)
-        else:
-            false_results.append(row)
-    return true_results,false_results
-
+        return row[feature_column] == feature_value
 
 def split_data2(rows, feature_column, value_to_test_against):
     true_results2, false_results2 = [], []
     #u = 0
     for row in rows:
+         if compare(row, feature_column, value_to_test_against):
+            true_results2.append(row)
+         else:
+            false_results2.append(row)
         #print(row)
         #testing_feature_value = rows[feature, feature_value]
-        if is_numeric(row[feature_column]):
-            if float(row[feature_column]) >= float(value_to_test_against):
-                #print('%s IS GREATER THAN %s'%(row[feature_column],value_to_test_against))
-                true_results2.append(row)
-                #u += 1
-            else:
-                #print('%s IS LESS THAN %s'%(row[feature_column],value_to_test_against))
-                false_results2.append(row)
-                #u += 1
-    #print(u)
+        
     return true_results2, false_results2
 
 #calculate gini of the rows inputted 
@@ -132,89 +91,6 @@ def calculate_info_gain(left_side,right_side, current_gini):
     Pi = float(len(left_side)/ (len(left_side) + len(right_side)))
     info_gain = current_gini - Pi * calculate_gini(left_side) - (1 - Pi) * calculate_gini(right_side)
     return info_gain
-
-
-def find_best_split(rows):
-    best_gain = 0
-    best_gain2 =0
-    best_question = None
-
-    #calculates gini for the rows provided
-    current_gini = calculate_gini(rows)
-    no_features = len(rows[0]) 
-    #print(no_features)
-
-    #iterates through the features in the dataset (i.e columns)
-    for feature in range(no_features):
-        #print(feature)
-        #print(feature)
-
-        #skip if the feature is the one we want to classify as - set at start
-        if feature == class_column:
-            #print('in continue')
-            continue
-        #print("out of continue")
-
-        #get all the values in the current feature column
-        values = find_unique_vals_in_col(rows,feature)
-
-        #iterate through the column down
-        #i = 0
-        for val in values:
-            
-            #set the new question as the current attribute and its value
-            question = Question(feature,val)
-            #print(question)
-            #go through all the rows for that attribute and check them against our question 
-            true_rows, false_rows = split_data(rows, question)
-
-            #testing_feature_value = rows[feature][i]
-            
-
-            #calcualte the gain of the split 
-            gain = calculate_info_gain(true_rows,false_rows,current_gini)
-            if gain > best_gain:
-                best_gain = gain
-                best_question = question
-
-        
-        #print(rows[feature])
-        #print(rows[0])
-        # testing_feature_value = rows[0][1]
-        # print(testing_feature_value)
-        column_vals = get_column(rows,feature)
-        #print(column_vals[0])
-        l = 0
-        #print(rows[1][0])
-        while l < len(column_vals):
-            
-            testing_feature_value = rows[l][feature]
-            true2, false2 = split_data2(rows, feature, testing_feature_value)
-            
-            gain2 = calculate_info_gain(true2,false2,current_gini)
-            if gain2 > best_gain2:
-                best_gain2 = gain2
-                best_question2 = []
-                #best_question2.append([rows[l][feature]])
-                best_attribute = feature
-                best_attribute_value = rows[l][feature]
-            l += 1
-
-            # print('L:')
-            # print(l)
-        #print(testing_feature_value)
-        # print(attributes[feature])
-        # print(len(true2))
-        # print(true2)
-        # print(len(false2))
-        # print(false2)
-    # print(best_gain)
-    # print(best_question)
-    #print(best_gain)
-    #print(best_gain2)
-    #print(best_attribute)
-    #print(best_attribute_value)
-    return best_gain,best_question
 
 def find_best_split2(rows):
     best_gain2 =0
@@ -275,22 +151,6 @@ def iterate_through_tree2(rows):
 
     return Decision_Node2(feature_column, feature_value, true_branch2, false_branch2)
 
-def iterate_through_tree(rows):
-    info_gain, question = find_best_split(rows)
-    
-    if info_gain == 0:
-        return Leaf(rows)
-    
-    true_rows, false_rows = split_data(rows, question)
-    
-    #print('true branch first')
-    true_branch = iterate_through_tree(true_rows)
-
-    #print('false branch now')
-    false_branch = iterate_through_tree(false_rows)
-
-    return Decision_Node(question, true_branch, false_branch)
-
 
 class Leaf:
     def __init__(self,rows):
@@ -303,42 +163,19 @@ class Decision_Node2:
         self.true_branch = true_branch
         self.false_branch = false_branch
 
-class Decision_Node:
-    def __init__(self, question, true_branch, false_branch):
-        self.question = question
-        self.true_branch = true_branch
-        self.false_branch = false_branch
 
-
-
-def classify(row, node):
+def classify2(row, node):
     if isinstance(node,Leaf):
         return node.predictions
     
-    #need to rewrite this to be splitdata2 instead 
-    if node.question.compare_question_to_input(row):
-        return classify(row, node.true_branch)
+    feature = node.feature
+    feature_value = node.feature_value
+    
+    if compare(row,feature, feature_value):
+        return classify2(row, node.true_branch)
     else:
-        return classify(row, node.false_branch)
+        return classify2(row, node.false_branch)
 
-def print_tree(node, spacing=""):
-    """World's most elegant tree printing function."""
-
-    # Base case: we've reached a leaf
-    if isinstance(node, Leaf):
-        print (spacing + "Predict", node.predictions)
-        return
-
-    # Print the question at this node
-    print (spacing + str(node.question))
-
-    # Call this function recursively on the true branch
-    print (spacing + '--> True:')
-    print_tree(node.true_branch, spacing + "  ")
-
-    # Call this function recursively on the false branch
-    print (spacing + '--> False:')
-    print_tree(node.false_branch, spacing + "  ")
 
 def print_tree2(node, spacing=""):
 
@@ -354,6 +191,14 @@ def print_tree2(node, spacing=""):
     print (spacing + '--> False:')
     print_tree2(node.false_branch, spacing + "  ")
 
+
+def print_leaf(counts):
+    """A nicer way to print the predictions at a leaf."""
+    total = sum(counts.values()) * 1.0
+    probs = {}
+    for lbl in counts.keys():
+        probs[lbl] = str(int(counts[lbl] / total * 100)) + "%"
+    return probs
     
 #need to assign leafs/nodes 
 #need to call find best split recusively
@@ -410,15 +255,15 @@ if __name__ == "__main__":
     print(values)
     numbers = class_counts(training_data)
     print (numbers)
-    q= Question(1,0.25)
+    #q= Question(1,0.25)
     # print(Question(1,3))
     example = training_data[0]
-    q1 = q.compare_question_to_input(example)
+    #q1 = q.compare_question_to_input(example)
     # print(q1)
 
-    t,f = split_data(training_data,q)
+    #t,f = split_data(training_data,q)
 
-    infGain, q4 = find_best_split(training_data)
+    #infGain, q4 = find_best_split(training_data)
     #print(q4)
     #print(training_data[1])
     # print('\nTHIS IS T')
@@ -444,13 +289,18 @@ if __name__ == "__main__":
     # print(q3)
     # print(info3)
     # print('question class first')
-    tree = iterate_through_tree(training_data)
-    print_tree(tree)
+    #tree = iterate_through_tree(training_data)
+    # print_tree(tree)
     
-    print('non question class')
+    # print('non question class')
     tree2 = iterate_through_tree2(training_data)
-    tew = isinstance(tree2, Decision_Node2)
-    print(tew)
+    # tew = isinstance(tree2, Decision_Node2)
+    # print(tew)
     print_tree2(tree2)
-    # for row in training_data:
-    #     classify(row, tree)
+    for row in training_data:
+        # classify(row, tree) 
+        # classify2(row, tree2)
+        #print("Actual: %s. Predicted: %s" %
+         #  (row[3], print_leaf(classify(row, tree))))
+        print ("Actual: %s. Predicted: %s" %
+           (row[class_column], print_leaf(classify2(row, tree2))))
