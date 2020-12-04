@@ -177,8 +177,8 @@ def print_tree(node, spacing=""):
     if isinstance(node, Leaf):
         print (spacing + "Predict", node.predictions)
         return
-    
-    print(spacing + str(node.feature) + spacing + attributes[node.feature] + spacing + str(node.feature_value))
+
+    print(spacing + spacing + attributes[node.feature] + spacing + str(node.feature_value))
     
     print(spacing +'--> True:')
     print_tree(node.true_branch, spacing + "  ")
@@ -196,29 +196,39 @@ def print_leaf(counts):
         probs[lbl] = str(int(counts[lbl] / total * 100)) + "%"
     return probs
     
-testing_data, training_dat = [],[]
 
 #main needs cleaning up
 
-if __name__ == "__main__":
-    with open(training_data_name, 'r') as f:
+def read_in_file(file_name):
+    training_data = []
+    with open(file_name, 'r') as f:
         reader = csv.reader(f,delimiter='\t')
         linecount = 0
         for row in reader:
             if linecount == 0:
                 linecount += 1
-                attributes = row
-                #print('Attributes\n')
-                #print(attributes)
             else:
                 training_data.append(row)
+                #print(row)
                 linecount += 1
-                #every third dataset is added to testing data
-                if linecount % 3 == 0:
-                    testing_data.append(row)
-                else:
-                    training_dat.append(row)
+    return training_data
 
+def read_attributes(file_name):
+    attributes = []
+    with open(file_name) as f:
+        reader = csv.reader(f,delimiter='\t')
+        for row in reader:
+            attributes = row
+            break
+    return attributes
+
+if __name__ == "__main__":
+
+    training_data = read_in_file(training_data_name)
+    attributes = read_attributes(training_data_name)
+
+    print(attributes)
+    print(attributes[0])
     # another way to get the random third
     # random.shuffle(training_data)
     # no_samples = (linecount -1)//3
@@ -228,75 +238,19 @@ if __name__ == "__main__":
     # random_third = training_data[: no_samples]
     #print(len(random_third))
 
-
-
-    # print(testing_data)
-    # print('\n')
-    # print(training_dat)
-    # with open ('beer.txt', 'r') as q:
-        # #first_column = [row[0] for row in csv.reader(q,delimiter='\t')]
-        # for row2 in csv.reader(q,delimiter='\t'):
-            # print(row2)
-        #print (first_column)
-
-
-    # print(training_dat)
-    # print(testing_data)
   
-    # print(len(training_dat))
-    # print(len(testing_data))  
-    #print(training_data)
     print(len(training_data))
-    values = find_unique_vals_in_col(training_data,3)
-    print(values)
-    numbers = class_counts(training_data)
-    print (numbers)
-    #q= Question(1,0.25)
-    # print(Question(1,3))
-    example = training_data[0]
-    #q1 = q.compare_question_to_input(example)
-    # print(q1)
-
-    #t,f = split_data(training_data,q)
-
-    #infGain, q4 = find_best_split(training_data)
-    #print(q4)
-    #print(training_data[1])
-    # print('\nTHIS IS T')
-    # print(t)
-    # print('\nTHIS IS F')
-    # print(f)
-
-    # print (len(t))
-    # print (len(f))
-    ex = [ ['43.88938053', '0.548977011', '3.186363636', 'ale', '4.289230769', '16.73', '14.974', '13.44', '63.03285714'],['38.13716814', '0.328714951', '3.753636364', 'stout', '4.138461538', '18.7', '7.799368421', '10.2', '71.17142857']]
-    gini = calculate_gini(training_data)
-    print(gini)
-
-    # infog = calculate_info_gain(t,f,gini)
-    # print(infog)
-
-    # b_gain,b_question = find_best_split(training_data)
-    # print(b_gain)
-    # print(b_question)
-
-    # q3, info3 = iterate_through_tree(training_data)
-    # print('main loop ones')
-    # print(q3)
-    # print(info3)
-    # print('question class first')
-    #tree = iterate_through_tree(training_data)
-    # print_tree(tree)
     
-    # print('non question class')
     tree2 = iterate_through_tree(training_data)
-    # tew = isinstance(tree2, Decision_Node2)
-    # print(tew)
+   
     print_tree(tree2)
-    for row in training_data:
-        # classify(row, tree) 
-        # classify2(row, tree2)
-        #print("Actual: %s. Predicted: %s" %
-         #  (row[3], print_leaf(classify(row, tree))))
-        print ("Actual: %s. Predicted: %s" %
-           (row[class_column], print_leaf(classify(row, tree2))))
+    # # for row in training_data:
+    # #     # classify(row, tree) 
+    # #     # classify2(row, tree2)
+    # #     #print("Actual: %s. Predicted: %s" %
+    # #      #  (row[3], print_leaf(classify(row, tree))))
+    # #     print ("Actual: %s. Predicted: %s" %
+    # #        (row[class_column], print_leaf(classify(row, tree2))))
+    
+    right = 0 
+    wrong = 0 
