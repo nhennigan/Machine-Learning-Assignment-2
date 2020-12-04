@@ -171,8 +171,6 @@ def classify(row, node):
         return classify(row, node.false_branch)
 
 
-#print tree needs work
-
 def check_indent(depth):
     if depth == 0:
         indent = "|--"
@@ -182,8 +180,10 @@ def check_indent(depth):
         indent = "| | |--------"
     elif depth == 3:
         indent = "| | | |----------"
+    elif depth == 4:
+        indent = "| | | | |------------"
     else:
-        indent = "| | | |------------"
+        indent = "| | | | | |--------------"
     return indent
 
 #print out of tree
@@ -204,8 +204,6 @@ def print_tree(node,spacing="",equals="|--"):
     
     print_tree(node.false_branch,spacing+"  ")
     depth-=1
-
-
     
 #print leaf needs work
 
@@ -216,7 +214,6 @@ def print_leaf(counts):
     for lbl in counts.keys():
         probs[lbl] = str(int(counts[lbl] / total * 100)) + "%"
     return probs
-    
 
 #main needs cleaning up
 
@@ -245,34 +242,30 @@ def read_attributes(file_name):
 
 if __name__ == "__main__":
 
-    training_data = read_in_file(training_data_name)
+    input_data = read_in_file(training_data_name)
     attributes = read_attributes(training_data_name)
 
-    print(attributes)
-    print(attributes[0])
-
     # another way to get the random third
-    # random.shuffle(training_data)
-    # no_samples = (linecount - 1)//3
-    # # print(linecount)
-    # # print(no_samples)
-    # random_third = []
-    # random_third = training_data[: no_samples]
-    #print(len(random_third))
-
-  
-    print(len(training_data))
+    random.shuffle(input_data)
+    no_samples = (len(input_data))//3
+    testing_third,training_two_thirds = [],[]
+    testing_third = input_data[: no_samples]
+    training_two_thirds = input_data[no_samples:]
     
-    tree2 = iterate_through_tree(training_data)
-   
-    print_tree(tree2)
-    # # for row in training_data:
-    # #     # classify(row, tree) 
-    # #     # classify2(row, tree2)
-    # #     #print("Actual: %s. Predicted: %s" %
-    # #      #  (row[3], print_leaf(classify(row, tree))))
-    # #     print ("Actual: %s. Predicted: %s" %
-    # #        (row[class_column], print_leaf(classify(row, tree2))))
+    tree = iterate_through_tree(training_two_thirds)
+    print_tree(tree)
     
-    right = 0 
+    right = 0
     wrong = 0 
+    for row in testing_third:
+        # classify(row, tree) 
+        print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,tree))))
+        for key, value in classify(row,tree).items():
+            if row[class_column]==key:
+                right+=1
+            else:
+                wrong+=1
+    print('Percentage Correctly Classified')
+    print(right/(right+wrong)*100 )
+    print('Percentage Incorrectly Classified')
+    print(wrong/(right+wrong)*100 )
