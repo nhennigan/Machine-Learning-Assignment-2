@@ -2,12 +2,14 @@ import csv
 import math 
 import string
 import random
+import pptree 
 
 #needs to be put through pylinter 
 
 #user inputs
 training_data_name = 'beer.txt'
 class_column = 3
+depth = 0
 
 
 training_data = []
@@ -171,26 +173,45 @@ def classify(row, node):
 
 #print tree needs work
 
+def check_indent(depth):
+    if depth == 0:
+        indent = "|--"
+    elif depth == 1:
+        indent = "| |------"
+    elif depth == 2:
+        indent = "| | |--------"
+    elif depth == 3:
+        indent = "| | | |----------"
+    else:
+        indent = "| | | |------------"
+    return indent
 
 #print out of tree
-def print_tree(node, spacing=""):
-    if isinstance(node, Leaf):
-        print (spacing + "Predict", node.predictions)
+def print_tree(node,spacing="",equals="|--"):
+    global depth
+    indent=check_indent(depth)
+    if isinstance(node,Leaf):
+        print(indent+"--",node.predictions)
         return
-
-    print(spacing + spacing + attributes[node.feature] + spacing + str(node.feature_value))
+    indent=check_indent(depth)
+    print(indent+"Is "+attributes[node.feature]+" > "+str(node.feature_value)+" ?")
+    depth+=1
+    indent=check_indent(depth)
+    print(indent+'> True:')
+    print_tree(node.true_branch,spacing+"  ")
+    indent=check_indent(depth)
+    print(indent+"> False:")
     
-    print(spacing +'--> True:')
-    print_tree(node.true_branch, spacing + "  ")
+    print_tree(node.false_branch,spacing+"  ")
+    depth-=1
 
-    print (spacing + '--> False:')
-    print_tree(node.false_branch, spacing + "  ")
 
+    
 #print leaf needs work
 
 #print out of leaf
 def print_leaf(counts):
-    total = sum(counts.values()) * 1.0
+    total = sum(counts.values()) 
     probs = {}
     for lbl in counts.keys():
         probs[lbl] = str(int(counts[lbl] / total * 100)) + "%"
@@ -229,9 +250,10 @@ if __name__ == "__main__":
 
     print(attributes)
     print(attributes[0])
+
     # another way to get the random third
     # random.shuffle(training_data)
-    # no_samples = (linecount -1)//3
+    # no_samples = (linecount - 1)//3
     # # print(linecount)
     # # print(no_samples)
     # random_third = []
