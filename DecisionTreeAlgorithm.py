@@ -242,58 +242,57 @@ def read_attributes(file_name):
 if __name__ == "__main__":
     average_accuracy = 0
     i = 0
-    # while i < 100:
-    input_data = read_in_file(training_data_name)
-    attributes = read_attributes(training_data_name)
+    while i < 10:
+        input_data = read_in_file(training_data_name)
+        attributes = read_attributes(training_data_name)
 
-    # another way to get the random third
-    random.shuffle(input_data)
-    no_samples = (len(input_data))//3
-    testing_third,training_two_thirds = [],[]
-    testing_third = input_data[: no_samples]
-    training_two_thirds = input_data[no_samples:]
-    
-    
-    tree = iterate_through_tree(training_two_thirds)
-    print_tree(tree)
-    
-    comparison_training_data = read_in_file('comparison_training.txt')
-    comparison_testing_data = read_in_file('comparison_testing.txt')
-    comparison_tree = iterate_through_tree(comparison_training_data)
-    print_tree(comparison_tree)
+        # another way to get the random third
+        random.shuffle(input_data)
+        no_samples = (len(input_data))//3
+        testing_third,training_two_thirds = [],[]
+        testing_third = input_data[: no_samples]
+        training_two_thirds = input_data[no_samples:]
 
-    right = 0
-    wrong = 0 
-    for row in testing_third:
-        # classify(row, tree) 
-        print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,tree))))
-        for key, value in classify(row,tree).items():
-            if row[class_column]==key:
-                right+=1
-            else:
-                # print(row[class_column])
-                # print(key)
-                # print("wrong")
-                wrong+=1
-    print('Percentage Correctly Classified')
-    print(right/(right+wrong)*100 )
-    print('Percentage Incorrectly Classified')
-    print(wrong/(right+wrong)*100 )
-    print(wrong)
-        # average_accuracy += right
-        # i +=1
-    #
-    right2 =0 
-    wrong2 = 0
-    for row in comparison_testing_data:
-        # classify(row, tree) 
-        print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,comparison_tree))))
-        for key, value in classify(row,comparison_tree).items():
-            if row[class_column]==key:
-                right2+=1
-            else:
-                wrong2+=1
-    print('\n\nPercentage Correctly Classified')
-    print(right2/(right2+wrong2)*100 )
-    print('Percentage Incorrectly Classified')
-    print(wrong2/(right2+wrong2)*100 )
+
+        tree = iterate_through_tree(training_two_thirds)
+        print_tree(tree)
+
+        comparison_training_data = read_in_file('comparison_training.txt')
+        comparison_testing_data = read_in_file('comparison_testing.txt')
+        comparison_tree = iterate_through_tree(comparison_training_data)
+        print_tree(comparison_tree)
+
+        right = 0
+        wrong = 0 
+        for row in testing_third:
+            # classify(row, tree) 
+            print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,tree))))
+            for key, value in classify(row,tree).items():
+                if row[class_column]==key:
+                    right+=1
+                else:
+                    wrong+=1
+        print('Percentage Correctly Classified')
+        print(right/(right+wrong)*100 )
+        print('Percentage Incorrectly Classified')
+        print(wrong/(right+wrong)*100 )
+
+        # right2 =0 
+        # wrong2 = 0
+        # for row in comparison_testing_data:
+            # # classify(row, tree) 
+            # print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,comparison_tree))))
+            # for key, value in classify(row,comparison_tree).items():
+                # if row[class_column]==key:
+                    # right2+=1
+                # else:
+                    # wrong2+=1
+        # print('\n\nPercentage Correctly Classified')
+        # print(right2/(right2+wrong2)*100 )
+        # print('Percentage Incorrectly Classified')
+        # print(wrong2/(right2+wrong2)*100 )
+
+        i += 1
+        average_accuracy += right/(right+wrong)
+    print("Average Accuracy over 10 iterations:")
+    print(average_accuracy/10*100)
