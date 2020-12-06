@@ -234,6 +234,9 @@ if __name__ == "__main__":
     pymsgbox.alert('Please Select Testing Dataset \n (comparison_testing)', 'File Selector')
     comparison_testing_data = read_in_file(easygui.fileopenbox())
 
+    input_data = read_in_file(training_data_name)
+    attributes = read_attributes(training_data_name)
+
     print("Manually divided 1/3 and 2/3 test file for Weka comparison")
     comparison_tree = iterate_through_tree(comparison_training_data)
     print_tree(comparison_tree)
@@ -257,8 +260,7 @@ if __name__ == "__main__":
 
     while i < 10:
         print("The 10 itererations of randomly slit data for best accuarcy result")
-        input_data = read_in_file(training_data_name)
-        attributes = read_attributes(training_data_name)
+        
 
         # another way to get the random third
         random.shuffle(input_data)
