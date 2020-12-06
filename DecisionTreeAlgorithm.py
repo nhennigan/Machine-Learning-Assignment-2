@@ -7,6 +7,7 @@ from sys import stdout
 import easygui
 import pymsgbox
 
+print("Results printed to results.txt file in project folder ")
 #needs to be put through pylinter
 #Creates the file for results to printed too
 sys.stdout = open("results.txt", "w")
@@ -232,24 +233,45 @@ if __name__ == "__main__":
     comparison_training_data = read_in_file(easygui.fileopenbox())
     pymsgbox.alert('Please Select Testing Dataset \n (comparison_testing)', 'File Selector')
     comparison_testing_data = read_in_file(easygui.fileopenbox())
-    input_data = read_in_file(training_data_name)
-    attributes = read_attributes(training_data_name)
-    
+
+    print("Manually divided 1/3 and 2/3 test file for Weka comparison")
+    comparison_tree = iterate_through_tree(comparison_training_data)
+    print_tree(comparison_tree)
+
+    right2 =0
+    wrong2 = 0
+    for row in comparison_testing_data:
+        # classify(row, tree) 
+        print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,comparison_tree))))
+        for key, value in classify(row,comparison_tree).items():
+            if row[class_column]==key:
+                right2+=1
+            else:
+                wrong2+=1
+        print('\n\nPercentage Correctly Classified')
+        print(right2/(right2+wrong2)*100 )
+        print('Percentage Incorrectly Classified')
+        print(wrong2/(right2+wrong2)*100 )
+        print("End of weka comparison set \n \n \n \n")
+
+
     while i < 10:
-        # get the random third
+        print("The 10 itererations of randomly slit data for best accuarcy result")
+        input_data = read_in_file(training_data_name)
+        attributes = read_attributes(training_data_name)
+
+        # another way to get the random third
         random.shuffle(input_data)
         no_samples = (len(input_data))//3
         testing_third,training_two_thirds = [],[]
         testing_third = input_data[: no_samples]
         training_two_thirds = input_data[no_samples:]
 
+
         tree = iterate_through_tree(training_two_thirds)
         print_tree(tree)
 
-        # comparison_training_data = read_in_file('comparison_training.txt')
-        # comparison_testing_data = read_in_file('comparison_testing.txt')
-        # comparison_tree = iterate_through_tree(comparison_training_data)
-        # print_tree(comparison_tree)
+
 
         right = 0
         wrong = 0
@@ -266,21 +288,6 @@ if __name__ == "__main__":
         print('Percentage Incorrectly Classified')
         print(wrong/(right+wrong)*100 )
 
-        # right2 =0 
-        # wrong2 = 0
-        # for row in comparison_testing_data:
-            # # classify(row, tree) 
-            # print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,comparison_tree))))
-            # for key, value in classify(row,comparison_tree).items():
-                # if row[class_column]==key:
-                    # right2+=1
-                # else:
-                    # wrong2+=1
-        # print('\n\nPercentage Correctly Classified')
-        # print(right2/(right2+wrong2)*100 )
-        # print('Percentage Incorrectly Classified')
-        # print(wrong2/(right2+wrong2)*100 )
-
         i += 1
         average_accuracy += right/(right+wrong)
     print("Average Accuracy over 10 iterations:")
@@ -288,3 +295,4 @@ if __name__ == "__main__":
 
     #writing results to file
     sys.stdout.close()
+
