@@ -2,11 +2,13 @@ import csv
 import math 
 import string
 import random
-
+import easygui
+import pymsgbox
 #needs to be put through pylinter 
 
 #user inputs
-training_data_name = 'beer.txt'
+pymsgbox.alert('Please Select The Full Dataset', 'File Selector')
+training_data_name = easygui.fileopenbox()
 class_column = 3
 depth = 0
 
@@ -226,7 +228,7 @@ def read_in_file(file_name):
                 linecount += 1
             else:
                 training_data.append(row)
-                #print(row)
+                #print(row),l
                 linecount += 1
     return training_data
 
@@ -242,6 +244,10 @@ def read_attributes(file_name):
 if __name__ == "__main__":
     average_accuracy = 0
     i = 0
+    pymsgbox.alert('Please Select Training Dataset', 'File Selector')
+    comparison_training_data = read_in_file(easygui.fileopenbox())
+    pymsgbox.alert('Please Select Testing Dataset', 'File Selector')
+    comparison_testing_data = read_in_file(easygui.fileopenbox())
     while i < 10:
         input_data = read_in_file(training_data_name)
         attributes = read_attributes(training_data_name)
@@ -257,8 +263,7 @@ if __name__ == "__main__":
         tree = iterate_through_tree(training_two_thirds)
         print_tree(tree)
 
-        comparison_training_data = read_in_file('comparison_training.txt')
-        comparison_testing_data = read_in_file('comparison_testing.txt')
+
         comparison_tree = iterate_through_tree(comparison_training_data)
         print_tree(comparison_tree)
 
