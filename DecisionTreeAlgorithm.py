@@ -232,10 +232,10 @@ if __name__ == "__main__":
     comparison_training_data = read_in_file(easygui.fileopenbox())
     pymsgbox.alert('Please Select Testing Dataset \n (comparison_testing)', 'File Selector')
     comparison_testing_data = read_in_file(easygui.fileopenbox())
+    input_data = read_in_file(training_data_name)
+    attributes = read_attributes(training_data_name)
+    
     while i < 10:
-        input_data = read_in_file(training_data_name)
-        attributes = read_attributes(training_data_name)
-
         # get the random third
         random.shuffle(input_data)
         no_samples = (len(input_data))//3
