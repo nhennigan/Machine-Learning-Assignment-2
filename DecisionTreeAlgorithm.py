@@ -4,10 +4,9 @@ import string
 import random
 import sys
 from sys import stdout
-
-import console as console
 import easygui
 import pymsgbox
+
 #needs to be put through pylinter
 #Creates the file for results to printed too
 sys.stdout = open("results.txt", "w")
@@ -15,21 +14,6 @@ sys.stdout = open("results.txt", "w")
 pymsgbox.alert('Please Select The Full Dataset \n \t (beer)', 'File Selector')
 training_data_name = easygui.fileopenbox()
 class_column = 3
-depth = 0
-
-
-training_data = []
-classifications = []
-
-
-#returns a set of all unique values in the column col
-def find_unique_vals_in_col(rows,col):
-    # unique_set = []
-    # for row in rows:
-    #     if row[col] not in unique_set:
-    #             unique_set.append(row[col])
-    # return unique_set
-    return set([row[col] for row in rows])
 
 #returns all values in the column col
 def get_column(rows,col):
@@ -161,8 +145,6 @@ class Decision_Node:
         self.true_branch = true_branch
         self.false_branch = false_branch
 
-#may need new name on classify
-
 #method used to classify test data once tree is formed
 def classify(row, node):
     if isinstance(node,Leaf):
@@ -176,7 +158,7 @@ def classify(row, node):
     else:
         return classify(row, node.false_branch)
 
-
+depth = 0
 def check_indent(depth):
     if depth == 0:
         indent = "|--"
@@ -211,8 +193,6 @@ def print_tree(node,spacing="",equals="|--"):
     print_tree(node.false_branch,spacing+"  ")
     depth-=1
 
-#print leaf needs work
-
 #print out of leaf
 def print_leaf(counts):
     total = sum(counts.values())
@@ -221,7 +201,6 @@ def print_leaf(counts):
         probs[lbl] = str(int(counts[lbl] / total * 100)) + "%"
     return probs
 
-#main needs cleaning up
 
 def read_in_file(file_name):
     training_data = []
@@ -257,20 +236,20 @@ if __name__ == "__main__":
         input_data = read_in_file(training_data_name)
         attributes = read_attributes(training_data_name)
 
-        # another way to get the random third
+        # get the random third
         random.shuffle(input_data)
         no_samples = (len(input_data))//3
         testing_third,training_two_thirds = [],[]
         testing_third = input_data[: no_samples]
         training_two_thirds = input_data[no_samples:]
 
-
         tree = iterate_through_tree(training_two_thirds)
         print_tree(tree)
 
-
-        comparison_tree = iterate_through_tree(comparison_training_data)
-        print_tree(comparison_tree)
+        # comparison_training_data = read_in_file('comparison_training.txt')
+        # comparison_testing_data = read_in_file('comparison_testing.txt')
+        # comparison_tree = iterate_through_tree(comparison_training_data)
+        # print_tree(comparison_tree)
 
         right = 0
         wrong = 0
@@ -308,5 +287,4 @@ if __name__ == "__main__":
     print(average_accuracy/10*100)
 
     #writing results to file
-
     sys.stdout.close()
