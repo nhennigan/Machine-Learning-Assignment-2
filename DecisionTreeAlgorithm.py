@@ -251,15 +251,15 @@ if __name__ == "__main__":
                 right2+=1
             else:
                 wrong2+=1
-        print('\n\nPercentage Correctly Classified')
-        print(right2/(right2+wrong2)*100 )
-        print('Percentage Incorrectly Classified')
-        print(wrong2/(right2+wrong2)*100 )
-        print("End of weka comparison set \n \n \n \n")
+    print('\n\nPercentage Correctly Classified')
+    print(right2/(right2+wrong2)*100 )
+    print('Percentage Incorrectly Classified')
+    print(wrong2/(right2+wrong2)*100 )
+    print("End of weka comparison set \n \n \n \n")
 
-
+    print("The 10 itererations of randomly split data for average accuarcy result")
     while i < 10:
-        print("The 10 itererations of randomly slit data for best accuarcy result")
+        
         
 
         # another way to get the random third
@@ -285,14 +285,14 @@ if __name__ == "__main__":
                     right+=1
                 else:
                     wrong+=1
-        print('Percentage Correctly Classified')
+        print('\nPercentage Correctly Classified')
         print(right/(right+wrong)*100 )
         print('Percentage Incorrectly Classified')
         print(wrong/(right+wrong)*100 )
 
         i += 1
         average_accuracy += right/(right+wrong)
-    print("Average Accuracy over 10 iterations:")
+    print("\n\nAverage Accuracy over 10 iterations:")
     print(average_accuracy/10*100)
 
     #writing results to file
