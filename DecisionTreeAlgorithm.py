@@ -2,14 +2,17 @@ import csv
 import math
 import string
 import random
+import sys
+from sys import stdout
 
 import console as console
 import easygui
 import pymsgbox
 #needs to be put through pylinter
-
+#Creates the file for results to printed too
+sys.stdout = open("results.txt", "w")
 #user inputs
-pymsgbox.alert('Please Select The Full Dataset', 'File Selector')
+pymsgbox.alert('Please Select The Full Dataset \n \t (beer)', 'File Selector')
 training_data_name = easygui.fileopenbox()
 class_column = 3
 depth = 0
@@ -246,9 +249,9 @@ def read_attributes(file_name):
 if __name__ == "__main__":
     average_accuracy = 0
     i = 0
-    pymsgbox.alert('Please Select Training Dataset', 'File Selector')
+    pymsgbox.alert('Please Select Training Dataset \n (comparison_training)', 'File Selector')
     comparison_training_data = read_in_file(easygui.fileopenbox())
-    pymsgbox.alert('Please Select Testing Dataset', 'File Selector')
+    pymsgbox.alert('Please Select Testing Dataset \n (comparison_testing)', 'File Selector')
     comparison_testing_data = read_in_file(easygui.fileopenbox())
     while i < 10:
         input_data = read_in_file(training_data_name)
@@ -305,6 +308,5 @@ if __name__ == "__main__":
     print(average_accuracy/10*100)
 
     #writing results to file
-    f = open("results.txt", "w")
-    f.write()
-    f.close()
+
+    sys.stdout.close()
