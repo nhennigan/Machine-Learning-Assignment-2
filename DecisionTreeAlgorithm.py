@@ -1,10 +1,12 @@
 import csv
-import math 
+import math
 import string
 import random
+
+import console as console
 import easygui
 import pymsgbox
-#needs to be put through pylinter 
+#needs to be put through pylinter
 
 #user inputs
 pymsgbox.alert('Please Select The Full Dataset', 'File Selector')
@@ -17,7 +19,7 @@ training_data = []
 classifications = []
 
 
-#returns a set of all unique values in the column col 
+#returns a set of all unique values in the column col
 def find_unique_vals_in_col(rows,col):
     # unique_set = []
     # for row in rows:
@@ -51,7 +53,7 @@ def is_numeric(value):
         except ValueError:
             return False
 
-#compare the current row with the question value being tested against - return true if greater than 
+#compare the current row with the question value being tested against - return true if greater than
 def compare(row, feature_column, feature_value):
     if is_numeric(row[feature_column]):
             if float(row[feature_column]) >= float(feature_value):
@@ -72,7 +74,7 @@ def split_data(rows, feature_column, value_to_test_against):
             false_results.append(row)
     return true_results, false_results
 
-#calculate gini of the rows inputted 
+#calculate gini of the rows inputted
 def calculate_gini(rows):
     labels = class_counts(rows)
     impurity = 1
@@ -87,7 +89,7 @@ def calculate_info_gain(left_side,right_side, current_gini):
     info_gain = current_gini - Pi * calculate_gini(left_side) - (1 - Pi) * calculate_gini(right_side)
     return info_gain
 
-#iterate through attributes to find best attribute and attribute value to split data on 
+#iterate through attributes to find best attribute and attribute value to split data on
 def find_best_split(rows):
     best_gain =0
     best_attribute = 0
@@ -95,7 +97,7 @@ def find_best_split(rows):
 
     #calculates gini for the rows provided
     current_gini = calculate_gini(rows)
-    no_features = len(rows[0]) 
+    no_features = len(rows[0])
 
     #iterates through the features in the dataset (i.e columns)
     for feature in range(no_features):
@@ -103,42 +105,42 @@ def find_best_split(rows):
         if feature == class_column:
             continue
         column_vals = get_column(rows,feature)
-        
+
         l = 0
         while l < len(column_vals):
-            #value we want to check 
+            #value we want to check
             testing_feature_value = rows[l][feature]
-           
+
             #split the data based on the testing_feature_value
             true, false = split_data(rows, feature, testing_feature_value)
-            
+
             #calcualte gain based on current split
             gain = calculate_info_gain(true,false,current_gini)
-           
+
             #if better gain acheived update
             if gain > best_gain:
                 best_gain = gain
                 best_attribute = feature
                 best_attribute_value = rows[l][feature]
             l += 1
-    
+
     return best_gain,best_attribute,best_attribute_value
 
 #recursively find best attribute to split on until leaf nodes reached
 def iterate_through_tree(rows):
-    
+
     #find best split of data
-    info_gain, feature_column, feature_value = find_best_split(rows)  
+    info_gain, feature_column, feature_value = find_best_split(rows)
     #if no information gain we must be at a leaf node
     if info_gain == 0:
         return Leaf(rows)
-    
+
     #split the data on this best split
     true_rows, false_rows = split_data(rows, feature_column, feature_value )
 
     #recursively go through true branch until leaf reached
     true_branch = iterate_through_tree(true_rows)
-    #then recursively go through false branch 
+    #then recursively go through false branch
     false_branch = iterate_through_tree(false_rows)
 
     return Decision_Node(feature_column, feature_value, true_branch, false_branch)
@@ -162,10 +164,10 @@ class Decision_Node:
 def classify(row, node):
     if isinstance(node,Leaf):
         return node.predictions
-    
+
     feature = node.feature
     feature_value = node.feature_value
-    
+
     if compare(row,feature, feature_value):
         return classify(row, node.true_branch)
     else:
@@ -202,15 +204,15 @@ def print_tree(node,spacing="",equals="|--"):
     print_tree(node.true_branch,spacing+"  ")
     indent=check_indent(depth)
     print(indent+"> False:")
-    
+
     print_tree(node.false_branch,spacing+"  ")
     depth-=1
-    
+
 #print leaf needs work
 
 #print out of leaf
 def print_leaf(counts):
-    total = sum(counts.values()) 
+    total = sum(counts.values())
     probs = {}
     for lbl in counts.keys():
         probs[lbl] = str(int(counts[lbl] / total * 100)) + "%"
@@ -268,7 +270,7 @@ if __name__ == "__main__":
         print_tree(comparison_tree)
 
         right = 0
-        wrong = 0 
+        wrong = 0
         for row in testing_third:
             # classify(row, tree) 
             print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,tree))))
@@ -301,3 +303,8 @@ if __name__ == "__main__":
         average_accuracy += right/(right+wrong)
     print("Average Accuracy over 10 iterations:")
     print(average_accuracy/10*100)
+
+    #writing results to file
+    f = open("results.txt", "w")
+    f.write()
+    f.close()
