@@ -1,3 +1,5 @@
+#Written by Darcie Howley & Niamh Hennigan
+#Student ID= 17321006 & 17418134
 import csv
 import math
 import string
@@ -6,16 +8,44 @@ import sys
 from sys import stdout
 import easygui
 import pymsgbox
+from easygui import *
 
+#Darcie
 print("Results printed to results.txt file in project folder ")
 #needs to be put through pylinter
 #Creates the file for results to printed too
 sys.stdout = open("results.txt", "w")
 #user inputs
+text = "Enter Something (integer)"
+
+# window title
+title = "Window Title GfG"
+
+# default integer
+d_int = 3
+
+# lower bound
+lower = 0
+
+# upper bound
+upper = 99999
+
+# creating a integer box
+output = integerbox(text, title, d_int, lower, upper)
+
+# title for the message box
+title = "Message Box"
+
+# creating a message
+message = "Enterted Number : " + str(output)
+
+# creating a message box
+msg = msgbox(message, title)
+class_column = int(output) #3
 pymsgbox.alert('Please Select The Full Dataset \n \t (beer)', 'File Selector')
 training_data_name = easygui.fileopenbox()
-class_column = 3
 
+#Niamh
 #returns all values in the column col
 def get_column(rows,col):
     column_list = []
