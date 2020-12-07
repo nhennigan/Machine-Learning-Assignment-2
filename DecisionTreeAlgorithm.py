@@ -7,6 +7,7 @@ import random
 import sys
 from sys import stdout
 import easygui
+import null as null
 import pymsgbox
 from easygui import *
 
@@ -78,6 +79,7 @@ def compare(row, feature_column, feature_value):
         #if it is categorical, it returns true if the question column and value and input attribute are equal
     else:
         return row[feature_column] == feature_value
+        print("x")
 
 #create two lists true_results and false_results based on true/false (greater than/less than) from compare method
 def split_data(rows, feature_column, value_to_test_against):
@@ -312,8 +314,12 @@ if __name__ == "__main__":
             for key, value in classify(row,tree).items():
                 if row[class_column]==key:
                     right+=1
+                elif row[class_column]==null:
+                    print(0)
                 else:
                     wrong+=1
+
+
         print('\nPercentage Correctly Classified')
         print(right/(right+wrong)*100 )
         print('Percentage Incorrectly Classified')
