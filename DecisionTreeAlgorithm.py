@@ -71,6 +71,10 @@ def is_numeric(value):
 
 #compare the current row with the question value being tested against - return true if greater than
 def compare(row, feature_column, feature_value):
+    if row[feature_column] == null:
+        print("there is no value")
+        return False
+
     if is_numeric(row[feature_column]):
             if float(row[feature_column]) >= float(feature_value):
                 return True
