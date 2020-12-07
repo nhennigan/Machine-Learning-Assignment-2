@@ -36,6 +36,7 @@ output = integerbox(text, title, d_int, lower, upper)
 class_column = int(output) #3
 pymsgbox.alert('Please Select The Full Dataset \n \t (beer)', 'File Selector')
 training_data_name = easygui.fileopenbox()
+#Darcie-end
 
 #Niamh-start
 #returns all values in the column col
@@ -247,7 +248,9 @@ def read_attributes(file_name):
             attributes = row
             break
     return attributes
+#Niamh End
 
+#Darcie/Niamh- Start
 if __name__ == "__main__":
     average_accuracy = 0
     i = 0
@@ -319,4 +322,4 @@ if __name__ == "__main__":
 
     #writing results to file
     sys.stdout.close()
-
+#Darcie/Niamh End
