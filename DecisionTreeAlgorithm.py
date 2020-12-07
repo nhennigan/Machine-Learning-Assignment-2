@@ -39,6 +39,7 @@ training_data_name = easygui.fileopenbox()
 #Darcie-end
 
 #Niamh-start
+#Checks implemented by Darcie
 #returns all values in the column col
 def get_column(rows,col):
     column_list = []
@@ -63,6 +64,9 @@ def is_numeric(value):
             return True
         except ValueError:
             return False
+
+
+
 
 #compare the current row with the question value being tested against - return true if greater than
 def compare(row, feature_column, feature_value):
