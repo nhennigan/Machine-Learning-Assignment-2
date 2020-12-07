@@ -10,16 +10,16 @@ import easygui
 import pymsgbox
 from easygui import *
 
-#Darcie
+#Darcie-start
 print("Results printed to results.txt file in project folder ")
 #needs to be put through pylinter
 #Creates the file for results to printed too
 sys.stdout = open("results.txt", "w")
 #user inputs
-text = "Enter Something (integer)"
+text = "Please Select which column to use for classification"
 
 # window title
-title = "Window Title GfG"
+title = "Select Column"
 
 # default integer
 d_int = 3
@@ -33,19 +33,11 @@ upper = 99999
 # creating a integer box
 output = integerbox(text, title, d_int, lower, upper)
 
-# title for the message box
-title = "Message Box"
-
-# creating a message
-message = "Enterted Number : " + str(output)
-
-# creating a message box
-msg = msgbox(message, title)
 class_column = int(output) #3
 pymsgbox.alert('Please Select The Full Dataset \n \t (beer)', 'File Selector')
 training_data_name = easygui.fileopenbox()
 
-#Niamh
+#Niamh-start
 #returns all values in the column col
 def get_column(rows,col):
     column_list = []
