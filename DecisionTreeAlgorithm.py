@@ -1,11 +1,8 @@
 #Written by Darcie Howley & Niamh Hennigan
 #Student ID= 17321006 & 17418134
 import csv
-import math
-import string
 import random
 import sys
-from sys import stdout
 import easygui
 import null as null
 import pymsgbox
@@ -66,9 +63,6 @@ def is_numeric(value):
         except ValueError:
             pymsgbox.alert('There is an issue with file either null value \nor tabulated wrong please check file\nand restart program ', 'Incorrect File')
             return False
-
-
-
 
 #compare the current row with the question value being tested against - return true if greater than
 def compare(row, feature_column, feature_value):
@@ -295,8 +289,6 @@ if __name__ == "__main__":
 
     print("The 10 itererations of randomly split data for average accuarcy result")
     while i < 10:
-        
-        
 
         # another way to get the random third
         random.shuffle(input_data)
@@ -305,11 +297,8 @@ if __name__ == "__main__":
         testing_third = input_data[: no_samples]
         training_two_thirds = input_data[no_samples:]
 
-
         tree = iterate_through_tree(training_two_thirds)
         print_tree(tree)
-
-
 
         right = 0
         wrong = 0
@@ -323,7 +312,6 @@ if __name__ == "__main__":
                     print(0)
                 else:
                     wrong+=1
-
 
         print('\nPercentage Correctly Classified')
         print(right/(right+wrong)*100 )
