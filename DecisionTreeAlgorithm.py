@@ -64,7 +64,7 @@ def is_numeric(value):
             float(value)
             return True
         except ValueError:
-            pymsgbox.alert('There is an issue with file either null value \n \t or tabulated wrong\n \t please check file and restart program ', 'Incorrect File')
+            pymsgbox.alert('There is an issue with file either null value \nor tabulated wrong please check file\nand restart program ', 'Incorrect File')
             return False
 
 
