@@ -58,10 +58,7 @@ def class_counts(rows):
 #Darcie start
 #checks if input is numeric
 def is_numeric(value):
-        testing = isinstance(value,str)
-        print(testing)
         try:
-            print("got to first try")
             float(value)
             return True
         except ValueError:
