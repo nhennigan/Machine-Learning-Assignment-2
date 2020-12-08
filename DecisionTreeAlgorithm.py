@@ -10,7 +10,7 @@ from easygui import *
 
 #Darcie-start
 print("Results printed to results.txt file in project folder ")
-#needs to be put through pylinter
+
 #Creates the file for results to printed too
 sys.stdout = open("results.txt", "w")
 #user inputs
@@ -37,7 +37,6 @@ training_data_name = easygui.fileopenbox()
 #Darcie-end
 
 #Niamh-start
-#Checks implemented by Darcie
 #returns all values in the column col
 def get_column(rows,col):
     column_list = []
@@ -45,7 +44,7 @@ def get_column(rows,col):
         column_list.append(row[col])
     return column_list
 
-#determines how many of each classification is in the rows passed to the function
+#determines how many of each classification are in the rows passed to the function
 def class_counts(rows):
     counts = {}
     for row in rows:
@@ -55,6 +54,8 @@ def class_counts(rows):
         counts[label] += 1
     return counts
 
+#Niamh end
+#Darcie start
 #checks if input is numeric
 def is_numeric(value):
         try:
@@ -67,9 +68,9 @@ def is_numeric(value):
 #compare the current row with the question value being tested against - return true if greater than
 def compare(row, feature_column, feature_value):
     if row[feature_column] == null:
-        print("there is no value")
         return False
-
+#Darcie end
+#Niamh start
     if is_numeric(row[feature_column]):
             if float(row[feature_column]) >= float(feature_value):
                 return True
@@ -99,13 +100,13 @@ def calculate_gini(rows):
         impurity -= prob_of_l**2
     return impurity
 
-#calculate the information gain by getting the gini of left and right and taking that away from gini of system at that node
+#calculate the information gain by getting the gini of left and right and taking that away from overall gini of system at that node
 def calculate_info_gain(left_side,right_side, current_gini):
     Pi = float(len(left_side)/ (len(left_side) + len(right_side)))
     info_gain = current_gini - Pi * calculate_gini(left_side) - (1 - Pi) * calculate_gini(right_side)
     return info_gain
 
-#iterate through attributes to find best attribute and attribute value to split data on
+#iterate through attributes to find best attribute and best attribute value to split data on
 def find_best_split(rows):
     best_gain =0
     best_attribute = 0
@@ -130,7 +131,7 @@ def find_best_split(rows):
             #split the data based on the testing_feature_value
             true, false = split_data(rows, feature, testing_feature_value)
 
-            #calcualte gain based on current split
+            #calcualte information gain based on current split
             gain = calculate_info_gain(true,false,current_gini)
 
             #if better gain acheived update
@@ -156,7 +157,7 @@ def iterate_through_tree(rows):
 
     #recursively go through true branch until leaf reached
     true_branch = iterate_through_tree(true_rows)
-    #then recursively go through false branch
+    #then recursively go through false branch until leaf reached
     false_branch = iterate_through_tree(false_rows)
 
     return Decision_Node(feature_column, feature_value, true_branch, false_branch)
@@ -182,12 +183,15 @@ def classify(row, node):
     feature = node.feature
     feature_value = node.feature_value
 
+    #recursively call itself until leaf node reached
     if compare(row,feature, feature_value):
         return classify(row, node.true_branch)
     else:
         return classify(row, node.false_branch)
-
+#Niamh end
+#Darcie start
 depth = 0
+#used for cleaner print statement
 def check_indent(depth):
     if depth == 0:
         indent = "|--"
@@ -206,22 +210,27 @@ def check_indent(depth):
 #print out of tree
 def print_tree(node,spacing="",equals="|--"):
     global depth
+
     indent=check_indent(depth)
     if isinstance(node,Leaf):
         print(indent+"--",node.predictions)
         return
+
     indent=check_indent(depth)
     print(indent+"Is "+attributes[node.feature]+" > "+str(node.feature_value)+" ?")
     depth+=1
+
     indent=check_indent(depth)
     print(indent+'> True:')
+
     print_tree(node.true_branch,spacing+"  ")
     indent=check_indent(depth)
     print(indent+"> False:")
 
     print_tree(node.false_branch,spacing+"  ")
     depth-=1
-
+#Darcie end
+#Niamh start
 #print out of leaf
 def print_leaf(counts):
     total = sum(counts.values())
@@ -230,21 +239,22 @@ def print_leaf(counts):
         probs[lbl] = str(int(counts[lbl] / total * 100)) + "%"
     return probs
 
-
+#read in rows from file
 def read_in_file(file_name):
     training_data = []
     with open(file_name, 'r') as f:
         reader = csv.reader(f,delimiter='\t')
         linecount = 0
         for row in reader:
+            #skip first row with attributes
             if linecount == 0:
                 linecount += 1
             else:
                 training_data.append(row)
-                #print(row),l
                 linecount += 1
     return training_data
 
+#read attributes to be used in printing
 def read_attributes(file_name):
     attributes = []
     with open(file_name) as f:
@@ -259,6 +269,7 @@ def read_attributes(file_name):
 if __name__ == "__main__":
     average_accuracy = 0
     i = 0
+    
     pymsgbox.alert('Please Select Training Dataset \n (comparison_training)', 'File Selector')
     comparison_training_data = read_in_file(easygui.fileopenbox())
     pymsgbox.alert('Please Select Testing Dataset \n (comparison_testing)', 'File Selector')
@@ -268,13 +279,14 @@ if __name__ == "__main__":
     attributes = read_attributes(training_data_name)
 
     print("Manually divided 1/3 and 2/3 test file for Weka comparison")
+    #build and print tree for Weka comparison
     comparison_tree = iterate_through_tree(comparison_training_data)
     print_tree(comparison_tree)
 
+    #classify testing data for Weka comparison and calculate accuracy
     right2 =0
     wrong2 = 0
     for row in comparison_testing_data:
-        # classify(row, tree) 
         print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,comparison_tree))))
         for key, value in classify(row,comparison_tree).items():
             if row[class_column]==key:
@@ -290,20 +302,21 @@ if __name__ == "__main__":
     print("The 10 itererations of randomly split data for average accuarcy result")
     while i < 10:
 
-        # another way to get the random third
+        # randomise input data into one third and two thirds
         random.shuffle(input_data)
         no_samples = (len(input_data))//3
         testing_third,training_two_thirds = [],[]
         testing_third = input_data[: no_samples]
         training_two_thirds = input_data[no_samples:]
 
+        #build and print tree
         tree = iterate_through_tree(training_two_thirds)
         print_tree(tree)
 
+        #classify testing data for Weka comparison and calculate accuracy
         right = 0
         wrong = 0
         for row in testing_third:
-            # classify(row, tree) 
             print("Actual: %s. Predicted: %s"% (row[class_column],print_leaf(classify(row,tree))))
             for key, value in classify(row,tree).items():
                 if row[class_column]==key:
