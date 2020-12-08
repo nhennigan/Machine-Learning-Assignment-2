@@ -58,12 +58,16 @@ def class_counts(rows):
 #Darcie start
 #checks if input is numeric
 def is_numeric(value):
+        testing = isinstance(value,str)
+        print(testing)
         try:
+            print("got to first try")
             float(value)
             return True
         except ValueError:
             pymsgbox.alert('There is an issue with file either null value \nor tabulated wrong please check file\nand restart program ', 'Incorrect File')
             return False
+
 
 #compare the current row with the question value being tested against - return true if greater than
 def compare(row, feature_column, feature_value):
