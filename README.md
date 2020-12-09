@@ -1,3 +1,17 @@
 # Machine-Learning-Assignment-2
 4th year CT4101 Machine Learnng Assignment
 Written by Darcie Howley and Niamh Hennigan
+
+Pre prerequisites:
+open up cmd promp / terminal for linux
+`pip install cvs`
+`pip install random`
+`pip install sys`
+`pip install easygui`
+`pip install null`
+`pip install pymsgbox`
+
+Then clone repository from GitHub and should be ready to run.
+
+Note- First time it creates a results.txt then overwrites so if initally no results.txt this is why.
+
