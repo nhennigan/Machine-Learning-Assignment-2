@@ -13,5 +13,5 @@ open up cmd promp / terminal for linux
 
 Then clone repository from GitHub and should be ready to run.
 
-Note- First time it creates a results.txt then overwrites so if initally no results.txt this is why.
+Note- First time it runs it creates a results.txt then overwrites with each time code is ran, so if you want to keep your results save a local copy with an alterantive name eg results1.txt.
 
