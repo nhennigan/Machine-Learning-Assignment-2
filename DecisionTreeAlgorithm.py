@@ -293,7 +293,7 @@ if __name__ == "__main__":
         # another way to get the random third
         random.shuffle(input_data)
         no_samples = (len(input_data))//3
-        testing_third,training_two_thirds = [],[]
+        testing_third, training_two_thirds = [], []
         testing_third = input_data[: no_samples]
         training_two_thirds = input_data[no_samples:]
 
